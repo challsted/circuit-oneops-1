@@ -1,0 +1,8 @@
+LineLength:
+  Enabled: false
+
+ColonMethodCall:
+  Enabled: false
+
+WordArray:
+  Enabled: false

@@ -1,3 +1,1 @@
-include_recipe "tomcat::add"
-
-
+include_recipe 'tomcat::add'

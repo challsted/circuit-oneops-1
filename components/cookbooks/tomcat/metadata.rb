@@ -6,11 +6,11 @@ maintainer_email    "support@oneops.com"
 license             "Apache License, Version 2.0"
 depends             "shared"
 depends             "javaservicewrapper"
+depends             "tomcat"
 
 grouping 'default',
          :access => "global",
          :packages => ['base', 'mgmt.catalog', 'mgmt.manifest', 'catalog', 'manifest', 'bom']
-
 
 # installation attributes
 attribute 'install_type',
@@ -68,8 +68,6 @@ attribute 'build_version',
             :form => {'field' => 'select', 'options_for_select' => [['42', '42'], ['62', '62']]}
           }
 
-
-
 attribute 'webapp_install_dir',
           :description => "Webapps Directory",
           :default => "/opt/tomcat7/webapps",
@@ -78,7 +76,6 @@ attribute 'webapp_install_dir',
               :category => '1.Global',
               :order => 6
           }
-
 
 attribute 'tomcat_user',
           :description => "User",
@@ -182,7 +179,6 @@ attribute 'environment',
               :order => 10
           }
 
-
 attribute 'logfiles_path',
           :description => 'Logfiles Path',
           :required => 'required',
@@ -195,13 +191,13 @@ attribute 'logfiles_path',
 
 #autoDeploy
 attribute 'autodeploy_enabled',
-	  :description => "Enable autoDeploy",
-	  :default => 'false',
+    :description => "Enable autoDeploy",
+    :default => 'false',
           :format => {
-    	  :help => 'Disable / Enable autoDeploy',
-	    :category => '2.Server',
-	    :form => { 'field' => 'checkbox' },
-	    :order => 12
+        :help => 'Disable / Enable autoDeploy',
+      :category => '2.Server',
+      :form => { 'field' => 'checkbox' },
+      :order => 12
   }
 
 #context.xml
@@ -218,7 +214,7 @@ attribute 'context_enabled',
   attribute 'context_tomcat',
           :description => 'Default Values for context.xml',
           :default => IO.read(File.join(File.dirname(__FILE__), 'files/context.xml')),
-	         :data_type => 'text',
+           :data_type => 'text',
           :format => {
               :help => 'Values defined here will override the existing context values',
               :category => '2.Server',
@@ -380,7 +376,6 @@ attribute 'enable_error_report_valve',
               :order => 28
           }
 
-
 attribute 'executor_name',
           :description => 'Name',
           :required => 'required',
@@ -412,7 +407,6 @@ attribute 'min_spare_threads',
               :order => 3,
               :pattern => '[0-9]+'
           }
-
 
 attribute 'java_options',
           :description => "Java Options",
@@ -473,7 +467,6 @@ attribute 'stop_time',
               :pattern => "[0-9]+"
 
           }
-
 
 attribute 'use_security_manager',
           :description => "Use Security Manager",
@@ -590,6 +583,12 @@ attribute 'max_number_of_retries_for_post_startup_check',
               :pattern => '[0-9]+',
               :order => 5
           }
+
+supports 'centos'
+supports 'redhat'
+supports 'fedora'
+supports 'ubuntu'
+supports 'debian'
 
 recipe 'status', 'Tomcat Status'
 recipe 'start', 'Start Tomcat'

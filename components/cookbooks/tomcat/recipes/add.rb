@@ -11,16 +11,16 @@ if node['tomcat'].has_key?("tomcat_group") && !node['tomcat']['tomcat_group'].em
 end
 
 (node['tomcat'].has_key?('protocol') && !node['tomcat']['protocol'].empty?) ?
-    node.set['tomcat']['connector']['protocol'] = node['tomcat']['protocol'] :
-    node.set['tomcat']['connector']['protocol'] = 'HTTP/1.1'
+  node.set['tomcat']['connector']['protocol'] = node['tomcat']['protocol'] :
+  node.set['tomcat']['connector']['protocol'] = 'HTTP/1.1'
 
 (node['tomcat'].has_key?('advanced_connector_config') && !node['tomcat']['advanced_connector_config'].empty?) ?
-    node.set['tomcat']['connector']['advanced_connector_config'] = node['tomcat']['advanced_connector_config'] :
-    node.set['tomcat']['connector']['advanced_connector_config'] = '{"connectionTimeout":"20000"}'
+  node.set['tomcat']['connector']['advanced_connector_config'] = node['tomcat']['advanced_connector_config'] :
+  node.set['tomcat']['connector']['advanced_connector_config'] = '{"connectionTimeout":"20000"}'
 
 Chef::Log.info(" protocol  #{node['tomcat']['connector']['protocol']} - connector config #{node['tomcat']['connector']['advanced_connector_config']} ssl_configured : #{node['tomcat']['connector']['ssl_configured']}")
 
-tomcat_version_name = "tomcat"+node.workorder.rfcCi.ciAttributes.version[0,1]
+tomcat_version_name = 'tomcat'+node['workorder'].rfcCi.ciAttributes.version[0,1]
 node.set['tomcat']['tomcat_version_name'] = tomcat_version_name
 
 #Fixed the defaults for executor thread pool, uses executor.
@@ -28,20 +28,20 @@ node.set['tomcat']['executor']['executor_name']=node['tomcat']['executor_name']
 node.set['tomcat']['executor']['max_threads']= node['tomcat']['max_threads']
 node.set['tomcat']['executor']['min_spare_threads']=node['tomcat']['min_spare_threads']
 
-depends_on=node.workorder.payLoad.DependsOn.reject{ |d| d['ciClassName'] !~ /Javaservicewrapper/ }
-depends_on_keystore=node.workorder.payLoad.DependsOn.reject{ |d| d['ciClassName'] !~ /Keystore/ }
+depends_on=node['workorder']['payLoad'].DependsOn.reject{ |d| d['ciClassName'] !~ /Javaservicewrapper/ }
+depends_on_keystore=node['workorder']['payLoad'].DependsOn.reject{ |d| d['ciClassName'] !~ /Keystore/ }
 
 Chef::Log.info("retrieving keystore location from keyStore but only if we depend on one")
 
 if (!depends_on_keystore.nil? && !depends_on_keystore.empty?)
-    Chef::Log.info("do depend on keystore, with filename: #{depends_on_keystore[0]['ciAttributes']['keystore_filename']} ")
-    #stash values which will be needed in server.xml template .erb
-    #node.set['tomcat']['keystore_path'] = depends_on_keystore[0].ciAttributes.keystore_filename
-    node.set['tomcat']['keystore_path'] = depends_on_keystore[0]['ciAttributes']['keystore_filename']
+  Chef::Log.info("do depend on keystore, with filename: #{depends_on_keystore[0]['ciAttributes']['keystore_filename']} ")
+  #stash values which will be needed in server.xml template .erb
+  #node.set['tomcat']['keystore_path'] = depends_on_keystore[0].ciAttributes.keystore_filename
+  node.set['tomcat']['keystore_path'] = depends_on_keystore[0]['ciAttributes']['keystore_filename']
 
-    #node.set['tomcat']['keystore_pass'] = depends_on_keystore[0].ciAttributes.keystore_password
-    node.set['tomcat']['keystore_pass'] = depends_on_keystore[0]['ciAttributes']['keystore_password']
-    Chef::Log.info("stashed keystore_path: #{node['tomcat']['keystore_path']} ")
+  #node.set['tomcat']['keystore_pass'] = depends_on_keystore[0].ciAttributes.keystore_password
+  node.set['tomcat']['keystore_pass'] = depends_on_keystore[0]['ciAttributes']['keystore_password']
+  Chef::Log.info("stashed keystore_path: #{node['tomcat']['keystore_path']} ")
 end
 
 #If HTTPS and HTTP are disabled then warn the user that they may not be able to communicate with tomcat
@@ -71,7 +71,7 @@ end
 
 #Ignore foodcritic(FC024) warnings.  We only have a subset of OSes available
 service "tomcat" do
-  only_if { File.exists?('/etc/init.d/' + tomcat_version_name) }
+  only_if { File.exist?('/etc/init.d/' + tomcat_version_name) }
   service_name tomcat_version_name
   case node["platform"]
   when "centos","redhat","fedora" # ~FC024
@@ -83,13 +83,13 @@ end
 
 include_recipe "tomcat::stop"
 
-case node.tomcat.install_type
+case node['tomcat']['install_type']
 when "repository"
   include_recipe "tomcat::add_repo"
 when "binary"
   include_recipe "tomcat::add_binary"
 else
-  Chef::Log.error("unsupported install_type: #{node.tomcat.install_type}")
+  Chef::Log.error("unsupported install_type: node['tomcat']['install_type']")
   exit 1
 end
 
@@ -102,7 +102,7 @@ end
 
 cron "logrotatecleanup" do
   minute '0'
-  command "ls -t1 #{node.tomcat.access_log_dir}/access_log*|tail -n +7|xargs rm -r"
+  command "ls -t1 #{node['tomcat']['access_log_dir']}/access_log*|tail -n +7|xargs rm -r"
   mailto '/dev/null'
   action :create
 end
@@ -115,11 +115,11 @@ cron "logrotate" do
 end
 
 #Ignore foodcritic(FC023) warning here.  Looks for the file resource and since it cannot find it the recipe fails if we use the only_if directive
-if (!depends_on.nil? && !depends_on.empty? && File.exists?('/etc/init.d/' + tomcat_version_name)) # ~FC023
+if (!depends_on.nil? && !depends_on.empty? && File.exist?('/etc/init.d/' + tomcat_version_name)) # ~FC023
 #delete the tomcat init.d daemon
-	file '/etc/init.d/'+ tomcat_version_name do
-		action :delete
-	end
+  file '/etc/init.d/'+ tomcat_version_name do
+    action :delete
+  end
 end
 
 template "/opt/nagios/libexec/check_tomcat.rb" do
@@ -136,7 +136,7 @@ template "/opt/nagios/libexec/check_ecv.rb" do
   mode "0755"
 end
 
-include_recipe 'tomcat::versionstatus'
+include_recipe 'tomcat::version_status'
 template "/opt/nagios/libexec/check_tomcat_app_version.sh" do
   source "check_tomcat_app_version.sh.erb"
    variables({
@@ -154,25 +154,23 @@ end
     recursive true
     not_if "test -d #{dir_name}"
   end
-  execute "chown -R #{node.tomcat_owner}:#{node.tomcat_group} #{dir_name}"
+  execute "chown -R #{node['tomcat_owner']}:#{node['tomcat_group']} #{dir_name}"
 end
 
 link node['tomcat']['webapp_install_dir'] do
   to node['tomcat']['webapp_dir']
-  owner node.tomcat_owner
-  group node.tomcat_group
+  owner node['tomcat_owner']
+  group node['tomcat_group']
   action :create
   not_if "test -d #{node['tomcat']['webapp_install_dir']}"
 end
 
-
 if (!depends_on.nil? && !depends_on.empty? && depends_on[0][:rfcAction] != "delete")
-	include_recipe "javaservicewrapper::restart"
+  include_recipe "javaservicewrapper::restart"
 else
-	service "tomcat" do
-  		service_name tomcat_version_name
-  		action [:enable]
+  service "tomcat" do
+    service_name tomcat_version_name
+    action [:enable]
   end
   include_recipe "tomcat::restart"
-
 end

@@ -2,4 +2,4 @@
 # Cookbook Name:: tomcat
 # Recipe:: repair
 
-include_recipe "tomcat::restart"
+include_recipe 'tomcat::restart'

@@ -20,8 +20,8 @@
   <role rolename="admin"/>
 <%
 manager_role = "manager-script"
-if node.tomcat.install_type == "repository"
-  case node.platform
+if node['tomcat']['install_type'] == "repository"
+  case node['platform']
   when "redhat","centos","fedora"
     manager_role = "manager"
   end
