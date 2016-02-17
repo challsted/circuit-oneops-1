@@ -6,7 +6,7 @@ Installs and configures the Tomcat, Java servlet engine and webserver.
 Requirements
 ============
 
-Platform: 
+Platform:
 
 * Debian, Ubuntu (OpenJDK, Sun)
 * CentOS, Red Hat, Fedora (OpenJDK)
@@ -29,4 +29,9 @@ Attributes
 TODO
 ====
 
-* SSL support
+* Pass all FoodCritic reports
+* Pass all RuboCop Violations
+* Achive 100% code coverage (ServerSpec)
+* Remove all Unix Specifc Code (Pure Chef)
+* Start autobuilding on commit (prehook?)
+* Find a way of publishing these pass/failed tests
