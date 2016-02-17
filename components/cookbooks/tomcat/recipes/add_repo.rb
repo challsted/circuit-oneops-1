@@ -58,14 +58,16 @@ template "/etc/#{tomcat_version_name}/server.xml" do
   mode '0644'
 end
 
-template "/etc/#{tomcat_version_name}/tomcat-users.xml" do
+# IGNORE Food Critic reports an issue of a missing template regardless of its presence
+template "/etc/#{tomcat_version_name}/tomcat-users.xml" do # ~FC033
   source 'tomcat-users.xml.erb'
   owner 'root'
   group 'root'
   mode '0644'
 end
 
-template "/etc/#{tomcat_version_name}/Catalina/localhost/manager.xml" do
+# IGNORE Food Critic reports an issue of a missing template regardless of its presence
+template "/etc/#{tomcat_version_name}/Catalina/localhost/manager.xml" do # ~FC033
   source 'manager.xml.erb'
   owner 'root'
   group 'root'
@@ -78,7 +80,8 @@ directory "/etc/#{tomcat_version_name}/policy.d" do
   group 'root'
 end
 
-template "/etc/#{tomcat_version_name}/policy.d/50local.policy" do
+# IGNORE Food Critic reports an issue of a missing template regardless of its presence
+template "/etc/#{tomcat_version_name}/policy.d/50local.policy" do # ~FC033
   source '50local.policy.erb'
   owner 'root'
   group 'root'
