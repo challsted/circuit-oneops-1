@@ -12,7 +12,6 @@ else
     only_if { File.exist?('/etc/init.d/' + tomcat_service_name) }
     block do
       Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
-
       shell_out!("service #{tomcat_service_name} stop ", live_stream: Chef::Log::logger)
     end
   end
