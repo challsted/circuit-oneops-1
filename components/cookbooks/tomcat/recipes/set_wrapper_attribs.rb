@@ -5,8 +5,7 @@ node.set['javaservicewrapper']['environment_vars'] = JSON.parse(node['tomcat']['
 
 # create array for java_params
 java_params = []
-if node['tomcat']['system_properties'].nil? &&
-  JSON.parse(node['tomcat']['system_properties']).keys.size > 0
+if node['tomcat']['system_properties'].nil? && JSON.parse(node['tomcat']['system_properties']).keys.size > 0
   JSON.parse(node['tomcat']['system_properties']).each do |key, value|
     java_params.push('-D' + key + '=' + value)
   end
