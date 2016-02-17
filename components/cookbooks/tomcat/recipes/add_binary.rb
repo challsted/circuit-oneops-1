@@ -127,7 +127,7 @@ directory "#{base_dir}/webapps/docs" do
   action :delete
 end
 
-# Food Critic reports an issue of a missing template regardless of its presence
+# IGNORE Food Critic reports an issue of a missing template regardless of its presence
 template "#{base_dir}/bin/setenv.sh" do # ~FC033
   source 'setenv.sh.erb'
   owner username
@@ -148,7 +148,7 @@ end
 depends_on = node['workorder']['payLoad'].DependsOn.reject { |d| d['ciClassName'] !~ /Javaservicewrapper/ }
 # if the javaservicewrapper component is present, dont generate the tomcat initd
 if depends_on.nil? || depends_on.empty? || depends_on[0][:rfcAction] == 'delete'
-  # Food Critic reports an issue of a missing template regardless of its presence
+  # IGNORE Food Critic reports an issue of a missing template regardless of its presence
   template "/etc/init.d/tomcat#{major_version}" do # ~FC033
     source 'generic_initd.erb'
     mode '0755'
@@ -173,13 +173,13 @@ template "#{base_dir}/conf/web.xml" do
   mode '0644'
 end
 
-# Food Critic reports an issue of a missing template regardless of its presence
+# IGNORE Food Critic reports an issue of a missing template regardless of its presence
 template "#{base_dir}/conf/context.xml" do # ~FC033
   source 'context7.xml.erb'
   mode '0644'
 end
 
-# Food Critic reports an issue of a missing template regardless of its presence
+# IGNORE Food Critic reports an issue of a missing template regardless of its presence
 template "#{base_dir}/conf/tomcat-users.xml" do # ~FC033
   source 'tomcat-users.xml.erb'
   owner 'root'
@@ -187,7 +187,7 @@ template "#{base_dir}/conf/tomcat-users.xml" do # ~FC033
   mode '0644'
 end
 
-# Food Critic reports an issue of a missing template regardless of its presence
+# IGNORE Food Critic reports an issue of a missing template regardless of its presence
 template "#{base_dir}/conf/manager.xml" do # ~FC033
   source 'manager.xml.erb'
   owner 'root'
@@ -195,7 +195,7 @@ template "#{base_dir}/conf/manager.xml" do # ~FC033
   mode '0644'
 end
 
-# Food Critic reports an issue of a missing template regardless of its presence
+# IGNORE Food Critic reports an issue of a missing template regardless of its presence
 template "#{base_dir}/conf/catalina.policy" do # ~FC033
   source 'catalina.policy.erb'
   owner 'root'
