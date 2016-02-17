@@ -9,3 +9,6 @@ ColonMethodCall:
 
 WordArray:
   Enabled: false
+
+AlignParameters:
+  Enabled: false
