@@ -69,12 +69,11 @@ if (node['tomcat']['keystore_path'] != nil  && !node['tomcat']['keystore_path'].
   end
 end
 
-#Ignore foodcritic(FC024) warnings.  We only have a subset of OSes available
 service "tomcat" do
   only_if { File.exist?('/etc/init.d/' + tomcat_version_name) }
   service_name tomcat_version_name
   case node["platform"]
-  when "centos","redhat","fedora" # ~FC024
+  when "centos","redhat","fedora"
     supports :restart => true, :status => true
   when "debian","ubuntu"
     supports :restart => true, :reload => true, :status => true
@@ -114,8 +113,7 @@ cron "logrotate" do
   action :create
 end
 
-#Ignore foodcritic(FC023) warning here.  Looks for the file resource and since it cannot find it the recipe fails if we use the only_if directive
-if (!depends_on.nil? && !depends_on.empty? && File.exist?('/etc/init.d/' + tomcat_version_name)) # ~FC023
+if (!depends_on.nil? && !depends_on.empty? && File.exist?('/etc/init.d/' + tomcat_version_name))
 #delete the tomcat init.d daemon
   file '/etc/init.d/'+ tomcat_version_name do
     action :delete

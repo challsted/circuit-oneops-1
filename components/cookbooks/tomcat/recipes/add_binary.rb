@@ -47,11 +47,10 @@ build_version_checksum = {
   "42" => "c163f762d7180fc259cc0d8d96e6e05a53b7ffb0120cb2086d6dfadd991c36df",
 }
 
-#Ignore foodcritic(FC002) warning here.  We need the string interpolation magic to get the correct build version
 shared_download_http source_list.join(",") do
   path dest_file
   action :create
-  checksum build_version_checksum["#{build_version}"]   # ~FC002
+  checksum build_version_checksum["#{build_version}"]
 end
 
 tar_flags = "--exclude webapps/ROOT"
@@ -135,8 +134,7 @@ template "#{base_dir}/bin/setenv.sh" do
   mode "0755"
 end
 
-#Ignore foodcritic(FC023) warning here.  Looks for the file resource and since it cannot find it the recipe fails if we use the not_if directive and the content is empty
-if !node['tomcat']['post_startup_command'].nil? # ~FC023
+if !node['tomcat']['post_startup_command'].nil?
   file "#{base_dir}/bin/poststartup.sh" do
     content node["tomcat"]["post_startup_command"].gsub(/\r\n?/,"\n")
     owner username
