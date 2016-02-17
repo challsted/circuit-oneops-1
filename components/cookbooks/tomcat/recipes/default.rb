@@ -50,12 +50,14 @@ end
 end
 
 # generate configs in CATALINA_BASE from templates
-template "#{node['global']['base']}/run/bin/setenv.sh" do
+# IGNORE Food Critic reports an issue of a missing template regardless of its presence
+template "#{node['global']['base']}/run/bin/setenv.sh" do # ~FC033
   source 'setenv.sh.erb'
   mode '0644'
 end
 
-template "#{node['global']['base']}/run/conf/server.xml" do
+# IGNORE Food Critic reports an issue of a missing template regardless of its presence
+template "#{node['global']['base']}/run/conf/server.xml" do # ~FC033
   source 'server.xml.erb'
   mode '0644'
 end
